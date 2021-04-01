@@ -25,8 +25,8 @@ function getInfo(...values) {
     values.forEach((value, i) => {
         results.push(
             {
-                isFalsy: value ? false : true,
-                type: `${typeof value}`,
+                isFalsy: !value,
+                type: typeof value,
                 StringLength: value.toString().length,
                 index: i
             }

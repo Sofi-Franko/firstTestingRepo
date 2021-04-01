@@ -20,49 +20,43 @@ output: "..."
 */
 
 function process(functions = {}, values = []) {
-    let functionResults = [];
+    try {
+        let functionResults = [];
 
-    values.forEach((value, i) => {
-        const valueFunc = typeof value;
-        const obj = {input: value}
+        values.forEach((value, i) => {
+            const valueFunc = typeof value;
+            const obj = {input: value}
 
-        if (functions.hasOwnProperty(valueFunc)) {
-            if (valueFunc === 'function') {
-                if (functions[valueFunc](value) !== null && functions[valueFunc](value) !== undefined) {
-                    let func = value
-                    obj.input = func;
-                    obj.output = functions[valueFunc](value);
-                } else return;
+            if (functions.hasOwnProperty(valueFunc)) {
+                if (valueFunc === 'function') {
+                    if (functions[valueFunc](value) !== null && functions[valueFunc](value) !== undefined) {
+                        let func = value
+                        obj.input = func;
+                        obj.output = functions[valueFunc](value);
+                    } else {
+                        let err = new Error();
+                        err.status = 400;
+                        err.code = "invalidDtoIn";
+                        throw err
+                    }
+                }
+                obj.output = functions[valueFunc](value);
+            } else {
+                obj.output = functions['default']();
             }
-            obj.output = functions[valueFunc](value);
+            functionResults.push(obj)
+        });
+        console.log(functionResults)
+        return functionResults
+    } catch (err) {
+        if (err.status > 500) {
+            throw err
         } else {
-            obj.output = functions['default']();
+            console.log(err.code)
         }
-        functionResults.push(obj)
-    });
-    console.log(functionResults)
-    return functionResults
-}
-
-process({
-    string: function (value) {
-        return value.length
-    },
-    number: function (value) {
-        return value * 2;
-    },
-    function: function (func) {
-        return func();
-    },
-    default: function () {
-        return 42
     }
-}, [11, 0, "bla", () => {
-    return null
-}, false, () => {
-    return 222
-}])
 
+}
 
 module.exports = process;
 
