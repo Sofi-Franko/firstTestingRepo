@@ -20,10 +20,10 @@ output: "..."
 */
 
 function process(functions = {}, values = []) {
-    try {
-        let functionResults = [];
+    let functionResults = [];
 
-        values.forEach((value, i) => {
+    values.forEach((value) => {
+        try {
             const valueFunc = typeof value;
             const obj = {input: value}
 
@@ -33,23 +33,24 @@ function process(functions = {}, values = []) {
                         let func = value
                         obj.input = func;
                         obj.output = functions[valueFunc](value);
-                    }
+                    } else return
                 }
                 obj.output = functions[valueFunc](value);
             } else {
                 obj.output = functions['default']();
             }
             functionResults.push(obj)
-        });
-        console.log(functionResults)
-        return functionResults
-    } catch (err) {
-        if (err.status >= 500) {
-            throw err
-        } else {
-            console.log(err.code)
+        } catch (err) {
+            if (err.status >= 500) {
+                throw err
+            } else {
+                console.log(err.code)
+            }
         }
-    }
+
+    });
+    console.log(functionResults)
+    return functionResults
 }
 
 module.exports = process;

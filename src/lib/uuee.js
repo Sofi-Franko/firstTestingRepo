@@ -3,10 +3,9 @@ const Human = require('./human');
 
 class UuEE extends Person {
     constructor(owner, state, uid) {
+        console.log("owner", owner)
         super(state, uid);
         this.ownerName = owner;
-
-        if(!(owner instanceof Human)) throw new Error();
     }
 
     sayHello(caller) {

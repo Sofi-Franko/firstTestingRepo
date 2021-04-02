@@ -1,47 +1,18 @@
-function validate(schema, values, keysStringFlag = '') {
+function validate(schema, values) {
     const invalidKeysArr = [];
-    Object.keys(schema).forEach(key => {
-        console.log(`$.${keysStringFlag+key}`)
-        // function repeatValidate(newScheme, newValues, pushKey) {
-        //     validate(newScheme, newValues)
-        // }
-        // if (!keysStringFlag) {
-        //     keysStringFlag = `$.${key}`
-        //     console.log('KEY ---> ', keysStringFlag)
-        // } else {
-        //     keysStringFlag += `.${key}`;
-        //     console.log('KEY obj ---> ', keysStringFlag)
-        // }
 
-        if (typeof values[key] === 'object') {
-            // console.log('OBJ ---> ',keysStringFlag)
-            validate(schema[key], values[key], keysStringFlag+key)
-
-
-            // for (let prop in values[key]) {
-            //     if (typeof values[key][prop] === "object") {
-            //         validate(schema[key][prop], values[key][prop]);
-            //     } else {
-            //         console.log(keysStringFlag)
-            //         validate(schema[key], values[key])
-            //     }
-            // }
-
-            // for (let prop in values[key]) {
-            //     if (typeof values[prop] === 'object') {
-            //         shapeFunc(values[prop]);
-            //     } else {
-            //         invalidKeysArr.push(`$.${key}.${values[key][prop]}`)
-            //     }
-            // }
-        } else {
-
-            if (!schema[key](values[key])) {
-                invalidKeysArr.push(`$.${keysStringFlag+key}`)
+    function recursiveValidation(newSchema, newValues, keysStringFlag = '') {
+        Object.keys(newSchema).forEach(key => {
+            console.log(`flag -> $.${keysStringFlag + key}`)
+            if (typeof newValues[key] === 'object')
+                recursiveValidation(newSchema[key], newValues[key], keysStringFlag + key + '.')
+            else {
+                if (!newSchema[key](newValues[key])) invalidKeysArr.push(`$.${keysStringFlag + key}`)
             }
-        }
-        // keysStringFlag = ''
-    })
+        })
+    }
+
+    recursiveValidation(schema, values)
     return invalidKeysArr
 }
 
