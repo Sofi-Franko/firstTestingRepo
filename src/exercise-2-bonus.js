@@ -10,7 +10,6 @@ iterate over these keys to run function from the schema with a value from the se
 store invalid values
  */
 
-
 const ValidationTypes = require("./lib/validation-types-extra");
 const {validate} = require("./lib/validation-extra");
 

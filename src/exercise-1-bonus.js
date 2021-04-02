@@ -33,11 +33,6 @@ function process(functions = {}, values = []) {
                         let func = value
                         obj.input = func;
                         obj.output = functions[valueFunc](value);
-                    } else {
-                        let err = new Error();
-                        err.status = 400;
-                        err.code = "invalidDtoIn";
-                        throw err
                     }
                 }
                 obj.output = functions[valueFunc](value);
@@ -49,13 +44,12 @@ function process(functions = {}, values = []) {
         console.log(functionResults)
         return functionResults
     } catch (err) {
-        if (err.status > 500) {
+        if (err.status >= 500) {
             throw err
         } else {
             console.log(err.code)
         }
     }
-
 }
 
 module.exports = process;
