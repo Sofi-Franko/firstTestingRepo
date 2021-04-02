@@ -23,19 +23,47 @@ const Uuee = require("./lib/uuee");
 
 class Factory {
 
-  static createInstance(className, params) {
+    static validClasses (name, param) {
+        let entity;
+        if (name === 'Human') {
+            entity = new Human(...param)
+            Factory.instancesArr.push(entity)
+        } else if (name === 'Uuee') {
+            console.log("params", param)
 
-  }
+            entity = new Uuee(...param)
+            Factory.instancesArr.push(entity)
+        }
+        return entity
+    }
 
-  static getInstance(uid) {
+    static createInstance(className, params) {
+        if (Factory.instancesArr.length < 5) return Factory.validClasses(className, params)
+        else {
+            Factory.instancesArr.shift();
+            return Factory.validClasses(className, params)
+        }
 
-  }
+    }
 
-  static getListListOfInstances() {
+    static getInstance(uid) {
 
-  }
+        let sdf;
+        Factory.instancesArr.forEach(instance => {
+            console.log("instance", instance)
+            if (instance.uid === uid) sdf = instance.ownerName
+            // else throw new Error()
+        })
+        console.log("sdf", sdf)
+        return sdf
+    }
+
+    static getListListOfInstances() {
+        return Factory.instancesArr}
 
 }
+
+Factory.instancesArr = [];
 
 
 module.exports = Factory;
